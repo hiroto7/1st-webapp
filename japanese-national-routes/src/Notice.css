@@ -1,0 +1,11 @@
+.notice[data-type="info"] {
+    color: rgba(255, 255, 255, .5);
+}
+
+.notice[data-type="warn"] {
+    color: yellow;
+}
+
+.notice[data-type="error"] {
+    color: red;
+}

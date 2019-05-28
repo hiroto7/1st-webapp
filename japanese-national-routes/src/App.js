@@ -2,39 +2,45 @@
 import React from 'react';
 import './App.css';
 import Arrow from './Arrow';
+import NoticeBox from './NoticeBox';
 
 /** @typedef {{ number: number; start: string[]; end: string[]; length: number | null }} Route */
+/** @typedef {import('./NoticeBox').Notice} Notice */
 
-/** @extends {React.Component<{}, { current: Route | null, currentRouteNumber: number | '', error: object | null, info: object | null }>} */
+/** @extends {React.Component<{}, { current: Route | null, currentRouteNumber: number | '', notice: Notice | null }>} */
 class App extends React.Component {
-  /** @type {{ current: Route | null, currentRouteNumber: number | '', error: object | null, info: object | null }} */
-  state = { currentRouteNumber: '', current: null, error: null, info: null };
+  /** @type {{ current: Route | null, currentRouteNumber: number | '', notice: Notice | null }} */
+  state = { currentRouteNumber: '', current: null, notice: null };
 
   /** @param {number} number */
   async changeRouteTo(number) {
     const endpoint = 'http://www.ohsuga.is.uec.ac.jp/sparql';
-    const query = `PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    const query = `PREFIX dbr: <http://dbpedia.org/resource/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dbpedia-ja: <http://ja.dbpedia.org/resource/>
 PREFIX dbpedia-owl: <http://dbpedia.org/ontology/>
 
 select distinct * where {
-  dbpedia-ja:国道${number}号
-    dbpedia-owl:routeStart ?routeStart ;
-    dbpedia-owl:routeEnd ?routeEnd .
+  optional {
+    dbpedia-ja:国道${number}号 dbpedia-owl:routeStart ?routeStart .
+    ?routeStart rdfs:label ?routeStartLabel.
+  }
+  optional {
+    dbpedia-ja:国道${number}号 dbpedia-owl:routeEnd ?routeEnd .
+    ?routeEnd rdfs:label ?routeEndLabel .
+  }
   optional {
     dbpedia-ja:国道${number}号 dbpedia-owl:length ?length .
   }
-  ?routeStart rdfs:label ?routeStartLabel.
-  ?routeEnd rdfs:label ?routeEndLabel .
 }
 `;
 
+    this.setState({
+      current: null,
+      notice: { message: `'国道${number}号' を問い合わせ中...`, type: 'info' }
+    })
+
     try {
-      this.setState({
-        current: null,
-        error: null,
-        info: '問い合わせ中...'
-      })
       const response = await fetch(`${endpoint}?query=${encodeURIComponent(query)}`, {
         headers: {
           Accept: 'application/sparql-results+json'
@@ -43,25 +49,41 @@ select distinct * where {
       const text = await response.text();
       /** @type { { results: { bindings: [{ routeStartLabel: { value: string }, routeEndLabel: { value: string }, length: { value: number } }] } }} */
       const json = JSON.parse(text);
-      if (json.results.bindings.length < 1) {
-        throw new Error(`'国道${number}号' は取得できません。`)
+
+      const start = [...new Set(json.results.bindings.filter(binding => 'routeStartLabel' in binding).map(binding => binding.routeStartLabel.value))];
+      const end = [...new Set(json.results.bindings.filter(binding => 'routeEndLabel' in binding).map(binding => binding.routeEndLabel.value))];
+      const length = json.results.bindings[0].length === undefined ? null : json.results.bindings[0].length.value
+
+      if (start.length < 1 && end.length < 1 && length === null) {
+        throw new Error(`'国道${number}号' を取得できません。`)
       }
-      this.setState({
-        current: {
-          number,
-          start: [...new Set(json.results.bindings.map(binding => binding.routeStartLabel.value))],
-          end: [...new Set(json.results.bindings.map(binding => binding.routeEndLabel.value))],
-          length: json.results.bindings[0].length === undefined ? null : json.results.bindings[0].length.value
-        },
-        error: null,
-        info: json.results.bindings[0].length === undefined ? `'国道${number}号' の長さは取得できません。` : null
-      })
+      if (number === this.state.currentRouteNumber) {
+        this.setState({
+          current: { number, start, end, length },
+          notice: start.length < 1 || end.length < 1 || length === null ? {
+            message: `'国道${number}号' の${
+              start.length < 1 ?
+                end.length < 1 ?
+                  '起終点' :
+                  length === null ?
+                    '起点と長さ' :
+                    '起点' :
+                end.length < 1 ?
+                  length === null ?
+                    '終点と長さ' :
+                    '終点' :
+                  '長さ'
+              }を取得できません。`,
+            type: 'warn'
+          } : null
+        });
+      }
     } catch (e) {
-      this.setState({
-        current: null,
-        error: e,
-        info: null
-      });
+      if (number === this.state.currentRouteNumber) {
+        this.setState({
+          notice: { type: 'error', message: e.toString() }
+        });
+      }
     }
   }
 
@@ -78,23 +100,22 @@ select distinct * where {
             }}></input>
           号
         </div>
-        {
-          this.state.info === null ? '' : (
-            <div style={{ color: 'rgba(255, 255, 255, .5)' }}>{this.state.info.toString()}</div>
-          )
-        }
-        {
-          this.state.error === null ? '' : (
-            <div style={{ color: 'red' }}>{this.state.error.toString()}</div>
-          )
-        }
+        {this.state.notice === null ? '' : (<NoticeBox notice={this.state.notice} />)}
         {
           this.state.current === null ? '' : (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '2em' }}>
-              <ul style={{ textAlign: 'right' }}>{this.state.current.start.map(str => (<li>{str}</li>))}</ul>
-              <div style={{ margin: '0 1em' }}>
-                {this.state.current.length === null ? (
-                  <div>{'-'.repeat(8)}</div>
+              {
+                this.state.current.start.length < 1 ? (
+                  <div>?</div>
+                ) : (
+                    <ul style={{ textAlign: 'right' }}>
+                      {this.state.current.start.map(str => (<li>{str}</li>))}
+                    </ul>
+                  )
+              }
+              <div style={{ margin: '0 1em' }}>{
+                this.state.current.length === null ? (
+                  <div>-&gt;</div>
                 ) : (
                     <div>
                       <div>{
@@ -106,9 +127,17 @@ select distinct * where {
                         <Arrow length={this.state.current.length / 20000} />
                       </div>
                     </div>
-                  )}
-              </div>
-              <ul style={{ textAlign: 'left' }}>{this.state.current.end.map(str => (<li>{str}</li>))}</ul>
+                  )
+              }</div>
+              {
+                this.state.current.end.length < 1 ? (
+                  <div>?</div>
+                ) : (
+                    <ul style={{ textAlign: 'left' }}>{
+                      this.state.current.end.map(str => (<li>{str}</li>))
+                    }</ul>
+                  )
+              }
             </div>
           )
         }

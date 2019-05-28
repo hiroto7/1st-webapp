@@ -15,7 +15,7 @@ export default class Arrow extends React.Component {
     componentDidMount() {
         /** @param {number} time */
         const callback = time => {
-            const value = Math.floor(time / 250 % (this.props.length + 1));
+            const value = Math.floor(time / 250) % Math.ceil(this.props.length + 1);
             if (this.state.value !== value) {
                 this.setState({ value });
             }
