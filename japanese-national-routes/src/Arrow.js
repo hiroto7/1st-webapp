@@ -18,7 +18,6 @@ export default class Arrow extends React.Component {
             const value = Math.floor(time / 250 % (this.props.length + 1));
             if (this.state.value !== value) {
                 this.setState({ value });
-                console.log(value);
             }
             this.animationFrame = requestAnimationFrame(callback);
         };
