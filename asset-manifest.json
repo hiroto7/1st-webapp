@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/1st-webapp/japanese-national-routes/static/css/main.8e542a0c.chunk.css",
+    "main.js": "/1st-webapp/japanese-national-routes/static/js/main.ea83b18e.chunk.js",
+    "main.js.map": "/1st-webapp/japanese-national-routes/static/js/main.ea83b18e.chunk.js.map",
+    "runtime~main.js": "/1st-webapp/japanese-national-routes/static/js/runtime~main.a4acc20e.js",
+    "runtime~main.js.map": "/1st-webapp/japanese-national-routes/static/js/runtime~main.a4acc20e.js.map",
+    "static/js/2.8e5da9f0.chunk.js": "/1st-webapp/japanese-national-routes/static/js/2.8e5da9f0.chunk.js",
+    "static/js/2.8e5da9f0.chunk.js.map": "/1st-webapp/japanese-national-routes/static/js/2.8e5da9f0.chunk.js.map",
+    "index.html": "/1st-webapp/japanese-national-routes/index.html",
+    "precache-manifest.38ae15839ee26eb0b40cd3a575a0a7af.js": "/1st-webapp/japanese-national-routes/precache-manifest.38ae15839ee26eb0b40cd3a575a0a7af.js",
+    "service-worker.js": "/1st-webapp/japanese-national-routes/service-worker.js",
+    "static/css/main.8e542a0c.chunk.css.map": "/1st-webapp/japanese-national-routes/static/css/main.8e542a0c.chunk.css.map"
+  }
+}
