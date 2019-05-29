@@ -35,6 +35,6 @@ export default class Arrow extends React.Component {
         for (let i = 0; i < this.props.length; i++) {
             parts.push(<span style={{ color: i < this.state.value ? 'white' : 'rgba(255, 255, 255, .5)' }}>&gt;</span>)
         }
-        return (<div style={{ letterSpacing: '-.25em' }}>{parts}</div >)
+        return (<div style={{ letterSpacing: '-.25em', userSelect: 'none' }}>{parts}</div >)
     }
 }

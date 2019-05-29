@@ -1,8 +1,18 @@
 .App {
-  background-color: darkblue;
   color: white;
   min-height: 100vh;
   text-align: center;
+}
+
+.App::before {
+  background-color: darkblue;
+  content: '';
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  z-index: -1;
 }
 
 input[type="number"] {
@@ -31,4 +41,33 @@ ul {
 
 li {
   list-style-type: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+figcaption {
+  text-align: center;
+}
+
+tr {
+  background-color: midnightblue;
+  border-color: rgba(255, 255, 255, .25);
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
+  user-select: none;
+}
+
+tr:hover {
+  filter: brightness(1.1);
+}
+
+tr:active {
+  filter: brightness(0.9);
+}
+
+td {
+  padding: .5em;
 }

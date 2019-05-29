@@ -32,7 +32,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "http://hiroto7.github.io/1st-webapp/japanese-national-routes/",
+  "homepage": "./",
   "devDependencies": {
     "gh-pages": "^2.0.1"
   }
