@@ -8,7 +8,7 @@ npmがインストールされている場合、次のコマンドを実行：
 npm install
 npm start
 ```
-また、`gh-pages` ブランチの `/japanese-national-routes/index.html` を開いても実行できる。
+また、[`gh-pages` ブランチ](https://github.com/hiroto7/1st-webapp/tree/gh-pages/japanese-national-routes)の `/japanese-national-routes/index.html` を開いても実行できる。
 
 ## 使い方
 1. 画面上部の `国道 ____ 号` へ国道番号を入力する。

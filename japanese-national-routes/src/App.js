@@ -119,9 +119,11 @@ select distinct * where {
     rdfs:label ?routeLabel .
   optional {
     ?route dbpedia-owl:routeStart ?routeStart .
+    ?routeStart rdfs:label ?routeStartLabel .
   }
   optional {
     ?route dbpedia-owl:routeEnd ?routeEnd .
+    ?routeEnd rdfs:label ?routeEndLabel .
   }
   optional {
     ?route dbpedia-owl:length ?length .
@@ -131,11 +133,11 @@ select distinct * where {
   } union {
     ?route dbpedia-owl:routeEnd <${point}> .
   }`).join(' union ')}
-  ?routeStart rdfs:label ?routeStartLabel .
-  ?routeEnd rdfs:label ?routeEndLabel .
   filter(regex(?routeLabel, "^国道[0-9]号$|^国道[0-9][0-9]号$|^国道[0-9][0-9][0-9]号$")) .
   bind(xsd:integer(replace(replace(?routeLabel, "国道", ""), "号", "")) as ?routeNumber) .
 } order by ?routeNumber`;
+
+console.log(query2)
 
       const response2 = await fetch(`${endpoint}?query=${encodeURIComponent(query2)}`, { headers: { Accept: 'application/sparql-results+json' } });
       const text2 = await response2.text();
