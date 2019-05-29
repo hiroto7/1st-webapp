@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html;" charset="utf-8" />
+  <title>Population</title>
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <script src="js/d3.v3.min.js"></script>
+  <script src="js/d3sparql.js"></script>
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
+  <script src="./bootstrap/js/bootstrap.min.js"></script>
+  <script src="script/pref.js"></script> <!-- 経度緯度情報 -->
+  <script src="script/script.js"></script>
+</head>
+
+<body>
+  <header>
+  </header>
+  <main>
+    <div class="wrapper">
+      <select id="query1" class="form-control">
+        <option>-年齢を選択-</option>
+        <option value="cd-code:age-all">すべての年齢</option>
+        <script>
+          for (let i = 0; i < 100; i++) {
+            document.write(`<option value="cd-code:age-${i}">${i}歳</option>`);
+          }
+        </script>
+      </select>
+      <select id="query2" class="form-control">
+        <option>-国籍を選択-</option>
+        <option value="cd-code:nationality-all">すべての国籍</option>
+        <option value="cd-code:nationality-japan">日本</option>
+      </select>
+      <div id="gmap"></div>
+    </div>
+  </main>
+</body>
+
+</html>
