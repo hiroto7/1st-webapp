@@ -137,8 +137,6 @@ select distinct * where {
   bind(xsd:integer(replace(replace(?routeLabel, "国道", ""), "号", "")) as ?routeNumber) .
 } order by ?routeNumber`;
 
-console.log(query2)
-
       const response2 = await fetch(`${endpoint}?query=${encodeURIComponent(query2)}`, { headers: { Accept: 'application/sparql-results+json' } });
       const text2 = await response2.text();
       /** @type {JSON1} */
